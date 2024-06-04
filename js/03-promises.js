@@ -17,6 +17,7 @@ export { createPromise };
 
 // Обробник події для відправлення форми
 const form = document.querySelector('.form');
+const submitButton = form.querySelector('button[type="submit"]');
 form.addEventListener('submit', onFormSubmit);
 
 // Функція обробки відправлення форми
@@ -29,10 +30,14 @@ function onFormSubmit(event) {
     const amount = Number(form.elements.amount.value);
 
     let delayStep = delay;
+    submitButton.disabled = true;
+
+    // Масив промісів для відстеження завершення всіх промісів
+    const promises = [];
 
     // Цикл для створення промісів на основі кількості
     for (let i = 1; i <= amount; i += 1) {
-        createPromise(i, delayStep)
+        const promise = createPromise(i, delayStep)
             .then(({ position, delay }) => {
                 console.log(`✅ Виконаний проміс ${position} через ${delay}мс`);
                 iziToast.success({
@@ -47,6 +52,12 @@ function onFormSubmit(event) {
                     message: `Відхилений проміс ${position} через ${delay}мс`,
                 });
             });
+        promises.push(promise);
         delayStep += step;
     }
+
+    // Увімкнути кнопку після завершення всіх промісів
+    Promise.all(promises).finally(() => {
+        submitButton.disabled = false;
+    });
 }

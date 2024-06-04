@@ -49,7 +49,12 @@ button {
   transition: background-color 0.3s;
 }
 
-button:hover {
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
   background-color: #0056b3;
 }
 

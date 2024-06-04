@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const startButton = document.querySelector('[data-start]');
     const goBackButton = document.getElementById('go-back');
+    const dateTimePicker = document.querySelector('#datetime-picker');
     const daysSpan = document.querySelector('[data-days]');
     const hoursSpan = document.querySelector('[data-hours]');
     const minutesSpan = document.querySelector('[data-minutes]');
@@ -23,11 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
         },
     };
 
-    flatpickr("#datetime-picker", options);
+    flatpickr(dateTimePicker, options);
 
     startButton.addEventListener('click', () => {
-        const endDate = new Date(document.querySelector("#datetime-picker").value);
+        const endDate = new Date(dateTimePicker.value);
         startCountdown(endDate);
+        startButton.disabled = true;
+        dateTimePicker.disabled = true;
     });
 
     goBackButton.addEventListener('click', () => {
@@ -42,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (timeRemaining <= 0) {
                 clearInterval(countdownInterval);
                 updateTimerDisplay(0, 0, 0, 0);
+                dateTimePicker.disabled = false;
                 return;
             }
             const timeParts = convertMs(timeRemaining);

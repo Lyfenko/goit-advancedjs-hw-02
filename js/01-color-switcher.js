@@ -8,14 +8,20 @@ const body = document.querySelector('body');
 let timerId = null;
 
 buttonStart.addEventListener('click', () => {
-    timerId = setInterval(() => {
-        body.style.backgroundColor = getRandomHexColor();
-    }, 1000);
-    buttonStart.disabled = true;
+    if (!timerId) { // Prevent multiple intervals
+        timerId = setInterval(() => {
+            body.style.backgroundColor = getRandomHexColor();
+        }, 1000);
+        buttonStart.disabled = true;
+        buttonStop.disabled = false;
+    }
 });
 
 buttonStop.addEventListener('click', () => {
-    clearInterval(timerId);
-    buttonStart.disabled = false;
-})
-
+    if (timerId) { // Prevent clearing interval if not active
+        clearInterval(timerId);
+        timerId = null;
+        buttonStart.disabled = false;
+        buttonStop.disabled = true;
+    }
+});
